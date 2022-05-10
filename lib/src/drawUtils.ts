@@ -1,4 +1,5 @@
-import type * as openCV from '../..';
+import { Vec3, Rect, Mat } from '../typings';
+import { cv } from '../opencv4nodejs'
 
 export interface TextParams {
   fontType: number;
@@ -18,138 +19,131 @@ export interface TextDimention {
 }
 
 interface DrawParams {
-  color?: openCV.Vec3;
+  color?: Vec3;
   thickness?: number;
   lineType?: number;
   shift?: number;
 }
 
-export default function (cv: typeof openCV) {
-  const DefaultTextParams: TextParams = { fontType: cv.FONT_HERSHEY_SIMPLEX, fontSize: 0.8, thickness: 2, lineType: cv.LINE_4 }
+const DefaultTextParams: TextParams = { fontType: cv.FONT_HERSHEY_SIMPLEX, fontSize: 0.8, thickness: 2, lineType: cv.LINE_4 }
 
-  function reshapeRectAtBorders(rect: openCV.Rect, imgDim: openCV.Mat) {
-    const x = Math.min(Math.max(0, rect.x), imgDim.cols)
-    const y = Math.min(Math.max(0, rect.y), imgDim.rows)
-    const width = Math.min(rect.width, imgDim.cols - x)
-    const height = Math.min(rect.height, imgDim.rows - y)
-    return new cv.Rect(x, y, width, height)
-  }
+function reshapeRectAtBorders(rect: Rect, imgDim: Mat) {
+  const x = Math.min(Math.max(0, rect.x), imgDim.cols)
+  const y = Math.min(Math.max(0, rect.y), imgDim.rows)
+  const width = Math.min(rect.width, imgDim.cols - x)
+  const height = Math.min(rect.height, imgDim.rows - y)
+  return new cv.Rect(x, y, width, height)
+}
 
-  function insertText(boxImg: openCV.Mat, text: string, origin: { x: number, y: number }, opts: Partial<TextParams & {color: openCV.Vec3}>) {
-    const fontType = opts.fontType || DefaultTextParams.fontType;
-    const fontSize = opts.fontSize || DefaultTextParams.fontSize;
-    const color = opts.color || new cv.Vec3(255, 255, 255);
-    const thickness = opts.thickness || DefaultTextParams.thickness;
-    const lineType = opts.lineType || DefaultTextParams.lineType;
-    const originPt = new cv.Point2(origin.x, origin.y)
-    boxImg.putText(text, originPt, fontType, fontSize, color, thickness, lineType, 0)
-    return boxImg
-  }
+function insertText(boxImg: Mat, text: string, origin: { x: number, y: number }, opts: Partial<TextParams & { color: Vec3 }>) {
+  const fontType = opts.fontType || DefaultTextParams.fontType;
+  const fontSize = opts.fontSize || DefaultTextParams.fontSize;
+  const color = opts.color || new cv.Vec3(255, 255, 255);
+  const thickness = opts.thickness || DefaultTextParams.thickness;
+  const lineType = opts.lineType || DefaultTextParams.lineType;
+  const originPt = new cv.Point2(origin.x, origin.y)
+  boxImg.putText(text, originPt, fontType, fontSize, color, thickness, lineType, 0)
+  return boxImg
+}
 
-  /**
-   * get text block contour
-   */
-  function getTextSize(text: string, opts?: Partial<TextParams>): TextDimention {
-    opts = opts || {};
-    const fontType = opts.fontSize || DefaultTextParams.fontType;
-    const fontSize = opts.fontSize || DefaultTextParams.fontSize;
-    const thickness = opts.thickness || DefaultTextParams.thickness;
-    
-    const { size, baseLine } = cv.getTextSize(text, fontType, fontSize, thickness)
-    return { width: size.width, height: size.height, baseLine }
-  }
+/**
+ * get text block contour
+ */
+function getTextSize(text: string, opts?: Partial<TextParams>): TextDimention {
+  opts = opts || {};
+  const fontType = opts.fontSize || DefaultTextParams.fontType;
+  const fontSize = opts.fontSize || DefaultTextParams.fontSize;
+  const thickness = opts.thickness || DefaultTextParams.thickness;
 
-   /**
-   * get text block width in pixel
-   * @param textLines lined to write
-   * @param opts draw params
-   * @returns text total width
-   */
+  const { size, baseLine } = cv.getTextSize(text, fontType, fontSize, thickness)
+  return { width: size.width, height: size.height, baseLine }
+}
 
-  function getMaxWidth(textLines: TextLines[], opts?: Partial<TextParams>): number {
-    const getTextWidth = (text: string, opts?: Partial<TextParams>) => getTextSize(text, opts).width
-    return textLines.reduce((maxWidth, textLine) => {
-      const w = getTextWidth(textLine.text, opts)
-      return (maxWidth < w ? w : maxWidth)
-    }, 0)
-  }
+/**
+* get text block width in pixel
+* @param textLines lined to write
+* @param opts draw params
+* @returns text total width
+*/
 
-  // function getBaseLine(textLine: TextLines, opts?: Partial<TextParams>): number {
-  //   return getTextSize(textLine.text, opts).baseLine
-  // }
+function getMaxWidth(textLines: TextLines[], opts?: Partial<TextParams>): number {
+  const getTextWidth = (text: string, opts?: Partial<TextParams>) => getTextSize(text, opts).width
+  return textLines.reduce((maxWidth, textLine) => {
+    const w = getTextWidth(textLine.text, opts)
+    return (maxWidth < w ? w : maxWidth)
+  }, 0)
+}
 
-  /**
-   * get single text line height in pixel
-   * @param textLine line to write
-   * @param opts draw params
-   * @returns text total height
-   */
-   function getLineHeight(textLine: TextLines, opts?: Partial<TextParams>): number {
-    return getTextSize(textLine.text, opts).height
-  }
+// function getBaseLine(textLine: TextLines, opts?: Partial<TextParams>): number {
+//   return getTextSize(textLine.text, opts).baseLine
+// }
 
-  /**
-   * get text block height in pixel
-   * @param textLines lined to write
-   * @param opts draw params
-   * @returns text total height
-   */
-  function getTextHeight(textLines: TextLines[], opts?: Partial<TextParams>): number {
-    return textLines.reduce((height, textLine) => height + getLineHeight(textLine, opts), 0)
-  }
+/**
+ * get single text line height in pixel
+ * @param textLine line to write
+ * @param opts draw params
+ * @returns text total height
+ */
+function getLineHeight(textLine: TextLines, opts?: Partial<TextParams>): number {
+  return getTextSize(textLine.text, opts).height
+}
 
-  function drawTextBox(img: openCV.Mat, upperLeft: { x: number, y: number }, textLines: TextLines[], alpha: number): openCV.Mat {
-    const padding = 10
-    const linePadding = 10
+/**
+ * get text block height in pixel
+ * @param textLines lined to write
+ * @param opts draw params
+ * @returns text total height
+ */
+function getTextHeight(textLines: TextLines[], opts?: Partial<TextParams>): number {
+  return textLines.reduce((height, textLine) => height + getLineHeight(textLine, opts), 0)
+}
 
-    const { x, y } = upperLeft
-    const width = getMaxWidth(textLines) + (2 * padding);
-    const height = getTextHeight(textLines) + (2 * padding) + ((textLines.length - 1) * linePadding)
-    const rect = reshapeRectAtBorders(new cv.Rect(x, y, width, height), img)
+export function drawTextBox(img: Mat, upperLeft: { x: number, y: number }, textLines: TextLines[], alpha: number): Mat {
+  const padding = 10
+  const linePadding = 10
 
-    const boxImg = img.getRegion(rect).mul(alpha)
-    let pt = new cv.Point2(padding, padding)
-    textLines.forEach(
-      (textLine/*, lineNumber*/) => {
-        const opts = Object.assign({}, DefaultTextParams, textLine);
-        pt = pt.add(new cv.Point2(0, getLineHeight(textLine)))
-        insertText(boxImg, textLine.text, pt, opts)
-        pt = pt.add(new cv.Point2(0, linePadding))
-      }
-    )
-    boxImg.copyTo(img.getRegion(rect))
-    return img
-  }
+  const { x, y } = upperLeft
+  const width = getMaxWidth(textLines) + (2 * padding);
+  const height = getTextHeight(textLines) + (2 * padding) + ((textLines.length - 1) * linePadding)
+  const rect = reshapeRectAtBorders(new cv.Rect(x, y, width, height), img)
 
-  function drawDetection(img: openCV.Mat, inputRect: openCV.Rect, opts = {} as DrawParams & { segmentFraction?: number }): openCV.Rect {
-    const rect = inputRect.toSquare()
+  const boxImg = img.getRegion(rect).mul(alpha)
+  let pt = new cv.Point2(padding, padding)
+  textLines.forEach(
+    (textLine/*, lineNumber*/) => {
+      const opts = Object.assign({}, DefaultTextParams, textLine);
+      pt = pt.add(new cv.Point2(0, getLineHeight(textLine)))
+      insertText(boxImg, textLine.text, pt, opts)
+      pt = pt.add(new cv.Point2(0, linePadding))
+    }
+  )
+  boxImg.copyTo(img.getRegion(rect))
+  return img
+}
 
-    const { x, y, width, height } = rect
+export function drawDetection(img: Mat, inputRect: Rect, opts = {} as DrawParams & { segmentFraction?: number }): Rect {
+  const rect = inputRect.toSquare()
 
-    const segmentLength = width / (opts.segmentFraction || 6);
-    const upperLeft = new cv.Point2(x, y)
-    const bottomLeft = new cv.Point2(x, y + height)
-    const upperRight = new cv.Point2(x + width, y)
-    const bottomRight = new cv.Point2(x + width, y + height)
+  const { x, y, width, height } = rect
 
-    const drawParams = { thickness: 2, ...opts };
+  const segmentLength = width / (opts.segmentFraction || 6);
+  const upperLeft = new cv.Point2(x, y)
+  const bottomLeft = new cv.Point2(x, y + height)
+  const upperRight = new cv.Point2(x + width, y)
+  const bottomRight = new cv.Point2(x + width, y + height)
 
-    img.drawLine(upperLeft, upperLeft.add(new cv.Point2(0, segmentLength)), drawParams)
-    img.drawLine(upperLeft, upperLeft.add(new cv.Point2(segmentLength, 0)), drawParams)
+  const drawParams = { thickness: 2, ...opts };
 
-    img.drawLine(bottomLeft, bottomLeft.add(new cv.Point2(0, -segmentLength)), drawParams)
-    img.drawLine(bottomLeft, bottomLeft.add(new cv.Point2(segmentLength, 0)), drawParams)
+  img.drawLine(upperLeft, upperLeft.add(new cv.Point2(0, segmentLength)), drawParams)
+  img.drawLine(upperLeft, upperLeft.add(new cv.Point2(segmentLength, 0)), drawParams)
 
-    img.drawLine(upperRight, upperRight.add(new cv.Point2(0, segmentLength)), drawParams)
-    img.drawLine(upperRight, upperRight.add(new cv.Point2(-segmentLength, 0)), drawParams)
+  img.drawLine(bottomLeft, bottomLeft.add(new cv.Point2(0, -segmentLength)), drawParams)
+  img.drawLine(bottomLeft, bottomLeft.add(new cv.Point2(segmentLength, 0)), drawParams)
 
-    img.drawLine(bottomRight, bottomRight.add(new cv.Point2(0, -segmentLength)), drawParams)
-    img.drawLine(bottomRight, bottomRight.add(new cv.Point2(-segmentLength, 0)), drawParams)
-    return rect
-  }
+  img.drawLine(upperRight, upperRight.add(new cv.Point2(0, segmentLength)), drawParams)
+  img.drawLine(upperRight, upperRight.add(new cv.Point2(-segmentLength, 0)), drawParams)
 
-  return {
-    drawTextBox,
-    drawDetection
-  }
+  img.drawLine(bottomRight, bottomRight.add(new cv.Point2(0, -segmentLength)), drawParams)
+  img.drawLine(bottomRight, bottomRight.add(new cv.Point2(-segmentLength, 0)), drawParams)
+  return rect
 }

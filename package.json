@@ -32,8 +32,8 @@
     "build-opencv": "bin/install.js"
   },
   "homepage": "https://github.com/UrielCh/opencv4nodejs#readme",
-  "main": "./lib/opencv4nodejs.js",
-  "typings": "./typings/index.d.ts",
+  "main": "./lib/index.js",
+  "typings": "./lib/index.d.ts",
   "scripts": {
     "prepack": "tsc",
     "install": "node bin/install.js auto",
@@ -47,7 +47,7 @@
     "do-rebuild": "tsc && node bin/install.js --flags=\"-DWITH_FFMPEG=ON\" --jobs MAX rebuild",
     "lint": "eslint examples/**/*.ts lib/**/*.ts typings/**/*.ts ",
     "clean": "node-gyp clean",
-    "cleanjs": "rimraf {install,lib,examples}/**/*.{d.ts,js,map}",
+    "cleanjs": "rimraf {install,lib,examples}/**/*.{js,map} lib/*.d.ts install/*.d.ts examples/**/*.d.ts",
     "build-debug": "tsc && BINDINGS_DEBUG=true node bin/install.js rebuild"
   },
   "dependencies": {

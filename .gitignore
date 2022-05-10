@@ -24,7 +24,8 @@ examples/faceDetect/*.js
 examples/dnn/*.js
 examples/**/*.d.ts
 install/*.d.ts
-lib/**/*.d.ts
+lib/*.d.ts
+lib/src/*.d.ts
 data/text-models/frozen_east_text_detection.pb
 data/face/lbfmodel.yaml
 bin/win32-x64-82/opencv4nodejs.node
@@ -38,3 +39,4 @@ examples/src/AgeGender/gender_net.caffemodel
 examples/src/AgeGender/opencv_face_detector_uint8.pb
 examples/src/AgeGender/age_net.caffemodel
 .pnpm-debug.log
+/**/*.map

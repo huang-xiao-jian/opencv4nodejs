@@ -324,3 +324,4 @@ or use OPENCV4NODEJS_* env variable.`);
     }
 }
 exports.compileLib = compileLib;
+//# sourceMappingURL=compileLib.js.map

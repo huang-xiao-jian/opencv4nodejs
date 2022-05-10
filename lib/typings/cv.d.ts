@@ -165,12 +165,3 @@ export interface FontParams extends DrawParams {
 export interface TextLine extends FontParams {
   text: string;
 }
-
-
-
-// non Natif
-export function drawDetection(img: Mat, inputRect: Rect, opts?: DrawDetectionParams): Rect;
-// non Natif
-export function drawTextBox(img: Mat, upperLeft: { x: number, y: number }, textLines: TextLine[], alpha: number): Mat;
-// non Natif
-export function toMatTypeName(type: number): string | undefined;
