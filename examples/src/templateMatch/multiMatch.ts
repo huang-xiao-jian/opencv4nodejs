@@ -1,4 +1,4 @@
-import cv, { Mat, Rect } from '@u4/opencv4nodejs';
+import cv, { Mat, Rect, toMatTypeName } from '@u4/opencv4nodejs';
 import { getResource } from '../utils';
 
 const confidence = 0.70;
@@ -69,7 +69,7 @@ const locateMetroStation = async (display: boolean) => {
   const matched = await parisMapMat.matchTemplateAsync(metroMat, cv.TM_CCOEFF_NORMED);
   matchTemplateAsyncTime = Date.now() - matchTemplateAsyncTime;
 
-  console.log(`matched Mat size is ${matched.cols}x${matched.rows} type is ${cv.toMatTypeName(matched.type)} channels: ${matched.channels} computed in ${matchTemplateAsyncTime}ms`);
+  console.log(`matched Mat size is ${matched.cols}x${matched.rows} type is ${toMatTypeName(matched.type)} channels: ${matched.channels} computed in ${matchTemplateAsyncTime}ms`);
   console.log(`-`);
 
   let minMaxLocTime = Date.now();

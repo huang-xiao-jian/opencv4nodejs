@@ -1,5 +1,5 @@
 import { Vec3, Rect, Mat } from '../typings';
-import { cv } from '../opencv4nodejs'
+import cv from '../opencv4nodejs'
 
 export interface TextParams {
   fontType: number;

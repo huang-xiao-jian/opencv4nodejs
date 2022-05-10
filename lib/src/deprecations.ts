@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { cv as model } from '../opencv4nodejs'
+import model from '../opencv4nodejs'
 import { Mat } from '../typings';
 
 export default (cv: typeof model) => {

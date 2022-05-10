@@ -8,7 +8,7 @@ const opencv_build_1 = require("@u4/opencv-build");
 const child_process_1 = __importDefault(require("child_process"));
 const fs_1 = __importDefault(require("fs"));
 const npmlog_1 = __importDefault(require("npmlog"));
-const commons_1 = require("../lib/commons");
+const commons_1 = require("./commons");
 const picocolors_1 = __importDefault(require("picocolors"));
 const path_1 = __importDefault(require("path"));
 const os_1 = require("os");
@@ -324,4 +324,3 @@ or use OPENCV4NODEJS_* env variable.`);
     }
 }
 exports.compileLib = compileLib;
-//# sourceMappingURL=compileLib.js.map

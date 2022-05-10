@@ -1,6 +1,13 @@
 import { cv, getResource } from './utils';
 import path from 'path';
-import type { Mat } from '../../typings';
+import type { Mat } from '@u4/opencv4nodejs';
+
+
+interface ClassConf {
+  class: string;
+  confidence: number;
+
+}
 
 /**
  * OCR One by one using OCRHMMClassifier
@@ -42,14 +49,14 @@ charImages.concat(numberImages).forEach((img) => {
   } = hmmClassifier.eval(img);
 
   const minConfidence = 0.05;
-  const predictions = classes
+  const predictions: ClassConf[] = classes
     .map(
-        (clazz: number, i: number) => ({
-          class: vocabulary[clazz],
-          confidence: confidences[i]
-        })
+      (clazz: number, i: number) => ({
+        class: vocabulary[clazz],
+        confidence: confidences[i]
+      })
     )
-    .filter(prediction => prediction.confidence > minConfidence);
+    .filter((prediction: ClassConf) => prediction.confidence > minConfidence);
 
   console.log('result:', predictions.map(p => `${p.class} : ${(p.confidence * 100).toFixed(2)}%`));
   cv.imshowWait('image', img);

@@ -4,4 +4,3 @@ if (!envName) {
 }
 const outputs = (process.env[envName] || '').split(/[\n;]/);
 outputs.forEach(o => console.log(o));
-//# sourceMappingURL=parseEnv.js.map

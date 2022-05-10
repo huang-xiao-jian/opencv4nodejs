@@ -2,7 +2,7 @@ import { OpencvModule, OpenCVBuilder, OpenCVBuildEnv, OpenCVBuildEnvParams, args
 import child_process from 'child_process'
 import fs from 'fs'
 import log from 'npmlog'
-import { resolvePath } from '../lib/commons'
+import { resolvePath } from './commons'
 import pc from 'picocolors'
 import path from 'path'
 import { EOL } from 'os'

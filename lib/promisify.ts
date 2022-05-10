@@ -7,7 +7,6 @@ const promisify = (fn: () => any) => function (...params: any[]) {
   if (isFn(params[params.length - 1])) {
     return fn.apply(this, params);
   }
-
   return new Promise((resolve, reject) => {
     const args = Array.prototype.slice.call(params);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,7 +16,6 @@ const promisify = (fn: () => any) => function (...params: any[]) {
       }
       return resolve(res);
     });
-
     fn.apply(this, args);
   });
 };
