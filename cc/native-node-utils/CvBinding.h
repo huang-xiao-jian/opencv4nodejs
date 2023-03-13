@@ -6,7 +6,7 @@
 
 class CvBinding : public FF::BindingBase, public FF::ISyncWorker, public FF::IAsyncWorker {
 public:
-	std::string execute() {
+	std::string execute() final {
 		try {
 			executeBinding();
 			return "";
@@ -32,6 +32,7 @@ protected:
 	std::function<void(void)> executeBinding = [](){};
 };
 
+// TClass must extand ObjectWrapBase<TClass>
 template<class TClass>
 class CvClassMethodBinding : public CvBinding {
 public:
