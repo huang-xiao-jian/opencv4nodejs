@@ -4,17 +4,31 @@
 #define __FF_BINDING_BASE_H__
 
 namespace FF {
+	/**
+	 * @brief Named returned types
+	 * @see NamedValue
+	 * name is used if multiple return values are returned, in this case un object is returned with the named ad keys
+	 */
 	class INamedValue {
 	public:
 		virtual std::string getName() = 0;
 		virtual v8::Local<v8::Value> wrap() = 0;
 	};
 
+	/**
+	 * @brief Common arg interface directly used for required parameter
+	 * @see class Arg
+	 */
 	class IArg {
 	public:
 		virtual bool unwrapArg(int argN, Nan::NAN_METHOD_ARGS_TYPE info) = 0;
 	};
 
+   /**
+    * @brief Optional parameter
+	* Optional parameter have name
+	* @see class OptArg
+    */
 	class IOptArg: public IArg {
 	public:
 		virtual bool unwrapProp(v8::Local<v8::Object> opts) = 0;
@@ -160,6 +174,9 @@ namespace FF {
 			return val;
 		}
 
+		/**
+		 * @brief can be overwrite for a custom implementation by default will unwrap required arguments defined with BindingBase::req()
+		 */
 		bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
 			for (uint idx = 0; idx < requiredArgs.size(); idx++) {
 				if (requiredArgs[idx]->unwrapArg(idx, info)) {
@@ -169,6 +186,9 @@ namespace FF {
 			return false;
 		}
 
+		/**
+		 * @brief can be overwrite for a custom implementation by default will unwrap Optional arguments defined with BindingBase::opt(name defaultValue)
+		 */
 		bool unwrapOptionalArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
 			uint optArgsIdx = requiredArgs.size();
 			for (uint idx = 0; idx < optionalArgs.size(); idx++) {
@@ -179,6 +199,9 @@ namespace FF {
 			return false;
 		}
 
+		/**
+		 * @brief can be overwrite for a custom implementation by default will check required arguments defined with BindingBase::opt(name defaultValue)
+		 */
 		bool hasOptArgsObject(Nan::NAN_METHOD_ARGS_TYPE info) {
 			if (optionalArgs.size() < 1) {
 				return false;
@@ -187,6 +210,9 @@ namespace FF {
 			return FF::isArgObject(info, optArgsIdx) && !optionalArgs[0]->assertType(info[optArgsIdx]);
 		}
 
+		/**
+		 * @brief can be overwrite for a custom implementation by default will check Optional arguments defined with BindingBase::opt(name defaultValue)
+		 */
 		bool unwrapOptionalArgsFromOpts(Nan::NAN_METHOD_ARGS_TYPE info) {
 			int optArgsIdx = requiredArgs.size();
 			v8::Local<v8::Object> opts = info[optArgsIdx]->ToObject(Nan::GetCurrentContext()).ToLocalChecked();
@@ -198,6 +224,9 @@ namespace FF {
 			return false;
 		}
 
+		/**
+		 * @brief can be overwrite for a custom implementation by default will return value based on BindingBase::ret(name)
+		 */
 		v8::Local<v8::Value> getReturnValue() {
 			if (returnValues.size() == 0) {
 				return Nan::Undefined();
