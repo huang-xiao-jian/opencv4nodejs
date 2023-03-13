@@ -19,7 +19,7 @@ NAN_MODULE_INIT(LBPHFaceRecognizer::Init) {
 	Nan::Set(target,Nan::New("LBPHFaceRecognizer").ToLocalChecked(), FF::getFunction(ctor));
 };
 
-struct LBPHFaceRecognizer::NewWorker : public FF::SimpleWorker {
+struct LBPHFaceRecognizer::NewWorker : public CatchCvExceptionWorker {
 public:
 	int radius = 1;
 	int neighbors = 8;
@@ -51,6 +51,10 @@ public:
 			FF::DoubleConverter::optProp(&threshold, "threshold", opts)
 		);
 	}
+
+	std::string executeCatchCvExceptionWorker() {
+		return "";
+	};
 };
 
 NAN_METHOD(LBPHFaceRecognizer::New) {

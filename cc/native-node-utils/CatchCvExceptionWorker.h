@@ -58,35 +58,29 @@ namespace FF {
 		}
 	};
 
-	/**
-	 * @brief basic non abstract class implementing default ISyncWorker and IAsyncWorker
-	 * 
-	 */
-	class SimpleWorker : public SimpleWorkerBase {
-		bool unwrapOptionalArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
-			return false;
-		}
-
-		bool hasOptArgsObject(Nan::NAN_METHOD_ARGS_TYPE info) {
-			return false;
-		}
-
-		bool unwrapOptionalArgsFromOpts(Nan::NAN_METHOD_ARGS_TYPE info) {
-			return false;
-		}
-
-		bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
-			return false;
-		}
-	};
-
 }
 
 /**
  * @brief Same as SimpleWorker but catch cv::Exception and return error message
+ * basic non abstract class implementing default ISyncWorker and IAsyncWorker
  * add virtual executeCatchCvExceptionWorker() method to implement
  */
-struct CatchCvExceptionWorker : public FF::SimpleWorker {
+class CatchCvExceptionWorker : public FF::SimpleWorkerBase {
+	bool unwrapOptionalArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+		return false;
+	}
+
+	bool hasOptArgsObject(Nan::NAN_METHOD_ARGS_TYPE info) {
+		return false;
+	}
+
+	bool unwrapOptionalArgsFromOpts(Nan::NAN_METHOD_ARGS_TYPE info) {
+		return false;
+	}
+
+	bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+		return false;
+	}
 public:
     /**
      * @brief avoid re-declaration of the execute() method, the executeCatchCvExceptionWorker() method must be implemented instead

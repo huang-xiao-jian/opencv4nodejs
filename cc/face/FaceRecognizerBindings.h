@@ -4,7 +4,7 @@
 #define __FF_FACERECOGNIZERBINDINGS_H_
 
 namespace FaceRecognizerBindings {
-	struct NewWorker : public FF::SimpleWorker {
+	struct NewWorker : public CatchCvExceptionWorker {
 	public:
 		int num_components = 0;
 		double threshold = DBL_MAX;
@@ -27,6 +27,10 @@ namespace FaceRecognizerBindings {
 				FF::DoubleConverter::optProp(&threshold, "threshold", opts)
 				);
 		}
+
+    std::string executeCatchCvExceptionWorker() {
+		  return "";
+	  };
 	};
 
   struct TrainWorker : public CatchCvExceptionWorker {

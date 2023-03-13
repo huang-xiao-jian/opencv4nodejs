@@ -5,7 +5,7 @@
 
 namespace OCRHMMDecoderBindings {
 
-  struct NewWorker : public FF::SimpleWorker  {
+  struct NewWorker : public CatchCvExceptionWorker {
   public:
     cv::Ptr <cv::text::OCRHMMDecoder::ClassifierCallback> classifier;
     std::string vocabulary;
@@ -27,6 +27,10 @@ namespace OCRHMMDecoderBindings {
         FF::IntConverter::optArg(4, &mode, info)
       );
     }
+
+    std::string executeCatchCvExceptionWorker() {
+		  return "";
+	  };
   };
   
   struct BaseRunWorker : public CatchCvExceptionWorker {
