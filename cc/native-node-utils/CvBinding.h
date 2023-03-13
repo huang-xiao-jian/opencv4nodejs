@@ -4,6 +4,11 @@
 #ifndef __FF_CV_BINDING_H__
 #define __FF_CV_BINDING_H__
 
+/**
+ * @brief simple binding base class that implements ISyncWorker and IAsyncWorker
+ * for more complex binduing use CatchCvExceptionWorker
+ * 
+ */
 class CvBinding : public FF::BindingBase, public FF::ISyncWorker, public FF::IAsyncWorker {
 public:
 	std::string execute() final {

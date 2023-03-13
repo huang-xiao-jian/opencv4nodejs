@@ -38,6 +38,11 @@ namespace FF {
 		T val;
 	};
 
+    /**
+     * @brief used for named optional parameter
+     * 
+     * @tparam Converter 
+     */
 	template <class Converter>
 	class NamedValue : public INamedValue, public Value<typename Converter::Type> {
 	public:
@@ -58,6 +63,11 @@ namespace FF {
 		std::string name;
 	};
 
+    /**
+     * @brief use for requiered parameter
+     * 
+     * @tparam Converter 
+     */
 	template <class Converter>
 	class Arg : public NamedValue<Converter>, public IArg {
 	public:
@@ -209,6 +219,7 @@ namespace FF {
 		}
 
 	protected:
+		// list of nmandatory arguments
 		std::vector<std::shared_ptr<IArg>> requiredArgs;
 		std::vector<std::shared_ptr<IOptArg>> optionalArgs;
 		std::vector<std::shared_ptr<INamedValue>> returnValues;

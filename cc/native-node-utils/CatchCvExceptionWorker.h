@@ -57,7 +57,6 @@ namespace FF {
 				|| (hasOptArgsObject(info) && unwrapOptionalArgsFromOpts(info));
 		}
 	};
-
 }
 
 /**
