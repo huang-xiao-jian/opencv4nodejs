@@ -35,7 +35,7 @@
   "main": "./lib/opencv4nodejs.js",
   "typings": "./typings/index.d.ts",
   "scripts": {
-    "build": "tsc --pretty --project .",
+    "build": "tsc --pretty --project tsconfig.json && tsc --pretty --project tsconfig-cjs.json",
     "prepack": "npm run build",
     "install": "node bin/install.js auto",
     "install_Mac": "CXXFLAGS=\"-std=c++14 -Wno-c++11-narrowing\" node ./install/install.js --version 4.5.3 build",
@@ -90,8 +90,10 @@
     "lib/**/*.d.ts",
     "lib/**/*.map",
     "bin/*.js",
+    "dist",
     "typings",
     "binding.gyp",
+    "tsconfig-cjs.json",
     "tsconfig.json"
   ]
 }
