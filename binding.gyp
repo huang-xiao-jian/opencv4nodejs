@@ -25,7 +25,7 @@
 			"OPENCV4NODEJS_FOUND_LIBRARY_XIMGPROC"
 		],
 		"include_dirs" : [
-			"/opt/homebrew/Cellar/opencv/4.7.0_4/include/opencv4",
+			"<(module_root_dir)/opencv/include",
 			"cc",
 			"cc/core",
 			"<!(node -e \"require('nan')\")",
@@ -53,7 +53,7 @@
 			"-lopencv_videostab",
 			"-lopencv_xfeatures2d",
 			"-lopencv_ximgproc",
-			"-L/opt/homebrew/Cellar/opencv/4.7.0_4/lib"
+			"-L<(module_root_dir)/opencv/lib"
 		],
 		"sources": [
 			"cc/opencv4nodejs.cc",
@@ -204,7 +204,7 @@
 	          {
 	            "link_settings": {
 	              "libraries": [
-					"-Wl,-rpath,@loader_path/../../../opencv-build/opencv/build/lib"
+					"-Wl,-rpath,@loader_path/../../opencv/lib/"
 	              ],
 	            }
 	          }
